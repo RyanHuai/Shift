@@ -1,6 +1,10 @@
 package com.mainframevampire.shift.data.model;
 
-public class OutputShift {
+import android.support.annotation.NonNull;
+
+import java.util.Comparator;
+
+public class Shift implements Comparable<Shift> {
     private int id;
     private String start;   //"2017-01-22T06:35:57+00:00"  (string, ISO 8601)
     private String end;
@@ -10,7 +14,7 @@ public class OutputShift {
     private String endLongitude;
     private String image;
 
-    public OutputShift(int id, String start, String end, String startLatitude, String startLongitude, String endLatitude, String endLongitude, String image) {
+    public Shift(int id, String start, String end, String startLatitude, String startLongitude, String endLatitude, String endLongitude, String image) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -83,5 +87,11 @@ public class OutputShift {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+
+    @Override
+    public int compareTo(@NonNull Shift other) {
+        return other.id - this.id;
     }
 }

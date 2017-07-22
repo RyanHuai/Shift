@@ -1,19 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.mainframevampire.shift.ui.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/offlineModeLabel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:text="Offline Mode"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:textColor="@android:color/darker_gray"/>
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/businessLayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/businessImage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/businessText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            tools:text="DEPUTY"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="30sp"
+            android:textAlignment="textStart"
+            android:gravity="start"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/currentShiftLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <ImageView
+            android:id="@+id/currentImageView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/currentStartLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="16sp"
+                android:text="Start"/>
+
+            <TextView
+                android:id="@+id/currentStartDateAndTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/currentStartLabel"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                tools:text="2017-07-31 14:23"/>
+
+
+            <TextView
+                android:id="@+id/currentStartStreet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/currentStartDateAndTime"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                tools:text="3 Jean Wailes Ave"/>
+
+            <TextView
+                android:id="@+id/currentStartState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/currentStartStreet"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                tools:text="Rhodes NSW 2138"/>
+
+            <TextView
+                android:id="@+id/currentStartCountry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/currentStartState"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                tools:text="Australia"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/inProgressLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/inProgressLabel1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:text="In"/>
+
+            <TextView
+                android:id="@+id/inProgressLabel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/inProgressLabel1"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:text="Progess"/>
+
+            <Button
+                android:id="@+id/endButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textColor="@android:color/black"
+                android:text="End"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>

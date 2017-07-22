@@ -3,7 +3,7 @@ package com.mainframevampire.shift.data.remote;
 
 import com.mainframevampire.shift.data.model.Business;
 import com.mainframevampire.shift.data.model.InputShift;
-import com.mainframevampire.shift.data.model.OutputShift;
+import com.mainframevampire.shift.data.model.Shift;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface APIService {
 
     @Headers("Authorization: Deputy Ryan")
     @GET("dmc/shifts")
-    Call<List<OutputShift>>  saveShifts();
+    Call<List<Shift>>  saveShifts();
 
 
 

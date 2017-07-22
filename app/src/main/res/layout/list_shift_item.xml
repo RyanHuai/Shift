@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="100dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/startLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="16sp"
+            android:text="Start"/>
+
+        <TextView
+            android:id="@+id/startDateAndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/startLabel"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="2017-07-31 14:23"/>
+
+
+        <TextView
+            android:id="@+id/startStreet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/startDateAndTime"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="3 Jean Wailes Ave"/>
+
+        <TextView
+            android:id="@+id/startState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/startStreet"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="Rhodes NSW 2138"/>
+
+        <TextView
+            android:id="@+id/startCountry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/startState"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="Australia"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/endLayout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/endLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="16sp"
+            android:text="End"/>
+
+        <TextView
+            android:id="@+id/endDateAndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/endLabel"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="2017-08-31 14:23"/>
+
+
+        <TextView
+            android:id="@+id/endStreet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/endDateAndTime"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="3 Jean Wailes Ave"/>
+
+        <TextView
+            android:id="@+id/endState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/endStreet"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="Rhodes NSW 2138"/>
+
+        <TextView
+            android:id="@+id/endCountry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/endState"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="Australia"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

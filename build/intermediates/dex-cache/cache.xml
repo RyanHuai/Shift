@@ -25,7 +25,7 @@
         jumboMode="true"
         optimize="true"
         revision="26.0.0"
-        sha1="6ca3ed3629e37ddc0ea46c2b563b7543ec867ad1">
+        sha1="eb2f02b5b2faefe1d5524e3daeb8787d851a0b8f">
         <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_7538f7abd84cbe4b2d4599684ce6e5a192ec2905\classes.dex" />
     </item>
     <item
@@ -48,12 +48,30 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\admin\.android\build-cache\1f70a9f355115911765e5d8c42679757f21f4edf\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="95519720620b553f63afc789beba9ad582807f7c">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_891bdf29ae95e5e12decb0896600ce521f5e7e81\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.8.1\2a8e0aa38a2e21cb39e2f5a7d6704cbdc941da0\gson-2.8.1.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.0"
         sha1="02a8e0aa38a2e21cb39e2f5a7d6704cbdc941da0">
         <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\gson-2.8.1_66edbecc05d3763de2d2048076cabae319682f44\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\picasso-2.5.2_f6db4f697fe5e87d59cfac24a349c3b36bfeebcb\classes.dex" />
     </item>
     <item
         is-multidex="true"
