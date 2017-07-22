@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="caff8e51a24901cfc9cd7e1cf83d84f4cb0c103b">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_fb8315250c240fbcf3f102d05418b48549b345a0\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\converter-gson\2.2.0\a09926806199499a20b2f5168779499abfa33342\converter-gson-2.2.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="a09926806199499a20b2f5168779499abfa33342">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\converter-gson-2.2.0_52819fbe07222375fcab10d9648981e495670a4c\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="6ca3ed3629e37ddc0ea46c2b563b7543ec867ad1">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_7538f7abd84cbe4b2d4599684ce6e5a192ec2905\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\converter-scalars\2.1.0\7c0d7c8f6e52115bb82fa018d81a8d0cae35dde5\converter-scalars-2.1.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="7c0d7c8f6e52115bb82fa018d81a8d0cae35dde5">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\converter-scalars-2.1.0_143034b69aeb048f7aeea62116bd9d8da6f663b2\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp\3.6.0\69edde9fc4b01c9fd51d25b83428837478c27254\okhttp-3.6.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="69edde9fc4b01c9fd51d25b83428837478c27254">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\okhttp-3.6.0_b20e5120c8e530b8c38241f51e0683302dc57a31\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.8.1\2a8e0aa38a2e21cb39e2f5a7d6704cbdc941da0\gson-2.8.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="02a8e0aa38a2e21cb39e2f5a7d6704cbdc941da0">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\gson-2.8.1_66edbecc05d3763de2d2048076cabae319682f44\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\retrofit\2.2.0\41e67dba73c3347e4503761642c39d0e06ca1f2\retrofit-2.2.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="041e67dba73c3347e4503761642c39d0e06ca1f2">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\retrofit-2.2.0_6f046f166da1cf19a80abeadfa0c2fa76afc52d0\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.11.0\840897fcd7223a8143f1d9b6f69714e7be34fd50\okio-1.11.0.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="840897fcd7223a8143f1d9b6f69714e7be34fd50">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\okio-1.11.0_cc6c7db8003066de78d659d964240d73d3d1c6ef\classes.dex" />
+    </item>
+
+</items>
