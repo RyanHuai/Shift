@@ -1,9 +1,13 @@
 package com.mainframevampire.shift.ui;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.provider.ContactsContract;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,9 +15,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.mainframevampire.shift.Adapter;
 import com.mainframevampire.shift.R;
@@ -24,19 +32,19 @@ import com.mainframevampire.shift.data.remote.APIService;
 import com.mainframevampire.shift.data.remote.ApiUtils;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static String dateString = "";
     private APIService mAPIService;
 
     //view variable
@@ -46,15 +54,32 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout mCurrentShiftLayout;
     private ImageView mCurrentImageView;
-    private TextView mCurrentStartDateAndTime;
-    private TextView mCurrentStartStreet;
-    private TextView mCurrentStartState;
-    private TextView mCurrentStartCountry;
+    private TextView mCurrentDateAndTime;
+    private TextView mCurrentLocation;
     private Button mEndButton;
+
+    private Button mStartButton;
+
+    private RelativeLayout mStartEndLayout;
+    private TextView mDate;
+    private Button mDateButton;
+    private TextView mTime;
+    private Button mTimeButton;
+    private EditText mRoad;
+    private EditText mSuburb;
+    private EditText mCity;
+    private EditText mPostcode;
+    private EditText mState;
+    private EditText mCountry;
+    private Button mCancelButton;
+    private Button mConfirmButton;
+
+    private boolean mShowStartLayout = true;
 
     private RecyclerView mRecyclerView;
     private List<Shift> mShifts;
     private Adapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +90,30 @@ public class MainActivity extends AppCompatActivity {
         mBusinessImageView = (ImageView) findViewById(R.id.businessImage);
         mBusinessText = (TextView) findViewById(R.id.businessText);
 
+
+
         mCurrentShiftLayout = (LinearLayout) findViewById(R.id.currentShiftLayout);
         mCurrentImageView = (ImageView) findViewById(R.id.currentImageView);
-        mCurrentStartDateAndTime = (TextView) findViewById(R.id.currentStartDateAndTime);
-        mCurrentStartStreet = (TextView) findViewById(R.id.currentStartStreet);
-        mCurrentStartState = (TextView) findViewById(R.id.currentStartState);
-        mCurrentStartCountry = (TextView) findViewById(R.id.currentStartCountry);
+        mCurrentDateAndTime = (TextView) findViewById(R.id.currentDateAndTime);
+        mCurrentLocation = (TextView) findViewById(R.id.currentLocation);
         mEndButton = (Button) findViewById(R.id.endButton);
+
+        mStartButton = (Button) findViewById(R.id.startButton);
+
+        mStartEndLayout = (RelativeLayout) findViewById(R.id.startEndLayout);
+        mDate = (TextView) findViewById(R.id.DateText);
+        mDateButton = (Button) findViewById(R.id.dateButton);
+        mTime = (TextView) findViewById(R.id.TimeText);
+        mTimeButton = (Button) findViewById(R.id.timeButton);
+        mRoad = (EditText) findViewById(R.id.editRoadText);
+        mSuburb = (EditText) findViewById(R.id.editSuburbText);
+        mCity = (EditText) findViewById(R.id.editCityText);
+        mPostcode = (EditText) findViewById(R.id.editPostcodeText);
+        mState = (EditText) findViewById(R.id.editStateText);
+        mCountry = (EditText) findViewById(R.id.editCountryText);
+        mCancelButton = (Button) findViewById(R.id.cancelButton);
+        mConfirmButton = (Button) findViewById(R.id.confirmButton);
+        mStartEndLayout.setVisibility(View.GONE);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -86,6 +128,60 @@ public class MainActivity extends AppCompatActivity {
             loadBusinessFromWeb();
             loadShiftsFromWeb();
         }
+
+        mStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartEndEditLayout();
+            }
+        });
+
+        mEndButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartEndEditLayout();
+            }
+        });
+
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
+
+        mTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new TimePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "timePicker");
+            }
+        });
+
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRecyclerViewLayout();
+            }
+        });
+
+        mConfirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Boolean isAllFieldsInput = checkInput();
+                if(isAllFieldsInput) {
+
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("information not completed")
+                            .setMessage("Please input all the fields");
+                    builder.create().show();
+                }
+
+            }
+        });
 
         //mAPIService = ApiUtils.getAPIService();
 
@@ -105,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
 //        );
 //        endShift(inputEndShift);
     }
-
 
     @Override
     protected void onResume() {
@@ -150,24 +245,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Shift>> call, Response<List<Shift>> response) {
                 if(response.isSuccessful()) {
-                    mShifts = response.body();
-                    Collections.sort(mShifts);
-                    Log.d("end", mShifts.get(0).getEnd());
-                    if(mShifts.get(0).getEnd().equals("")) {
-                        //shift in progress
-                        mShifts.remove(0);
-                        mCurrentShiftLayout.setVisibility(View.VISIBLE);
-                        Picasso.with(MainActivity.this).load(mShifts.get(0).getImage()).into(mCurrentImageView);
-                        String startDate = mShifts.get(0).getStart().substring(0, 10);
-                        String startTime = mShifts.get(0).getStart().substring(11, 19);
-                        mCurrentStartDateAndTime.setText(startDate + " " + startTime);
+                    if (mShifts != null) {
+                        mShifts = response.body();
+                        Collections.sort(mShifts);
+                        if (mShifts.get(0).getEnd().equals("")) {
+                            //shift in progress
+                            mShifts.remove(0);
+                            mShowStartLayout = false;
+                            showCurrentShiftLayout();
+                            Picasso.with(MainActivity.this).load(mShifts.get(0).getImage()).into(mCurrentImageView);
+                            String startDate = mShifts.get(0).getStart().substring(0, 10);
+                            String startTime = mShifts.get(0).getStart().substring(11, 19);
+                            mCurrentDateAndTime.setText(startDate + " " + startTime);
+                        } else {
+                            mShowStartLayout = true;
+                            showStartButton();
+                        }
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+                        mRecyclerView.setLayoutManager(linearLayoutManager);
+                        mAdapter = new Adapter(MainActivity.this, mShifts);
+                        mRecyclerView.setAdapter(mAdapter);
                     } else {
-                        mCurrentShiftLayout.setVisibility(View.GONE);
+                        mShowStartLayout = true;
+                        showStartButton();
                     }
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
-                    mRecyclerView.setLayoutManager(linearLayoutManager);
-                    mAdapter = new Adapter(MainActivity.this, mShifts);
-                    mRecyclerView.setAdapter(mAdapter);
                 }
             }
 
@@ -210,7 +311,68 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void showStartButton() {
+        mCurrentShiftLayout.setVisibility(View.GONE);
+        mStartButton.setVisibility(View.VISIBLE);
+    }
+
+    private void showCurrentShiftLayout() {
+        mCurrentShiftLayout.setVisibility(View.VISIBLE);
+        mStartButton.setVisibility(View.GONE);
+    }
+
+    private void showStartEndEditLayout() {
+        mStartEndLayout.setVisibility(View.VISIBLE);
+        mStartButton.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void showRecyclerViewLayout() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        if (mShowStartLayout) {
+            mStartButton.setVisibility(View.VISIBLE);
+            mCurrentShiftLayout.setVisibility(View.GONE);
+            mStartEndLayout.setVisibility(View.GONE);
+        } else {
+            mStartButton.setVisibility(View.GONE);
+            mCurrentShiftLayout.setVisibility(View.VISIBLE);
+            mStartEndLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        String yearString = String.valueOf(year);
+        String monthString = String.valueOf(month+1);
+        String formattedMonth = ("00" + monthString).substring(monthString.length());
+        String dayString = String.valueOf(dayOfMonth);
+        String formattedday = ("00" + dayString).substring(dayString.length());
+
+        mDate.setText(yearString + "-" + formattedMonth + "-" + formattedday);
+    }
 
 
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        String hourString = String.valueOf(hourOfDay);
+        String minuteString = String.valueOf(minute);
+        String formattedHour = ("00" + hourString).substring(hourString.length());
+        String formattedMinute = ("00" + minuteString).substring(minuteString.length());
+        mTime.setText(formattedHour + ":" + formattedMinute);
+    }
 
+    private Boolean checkInput() {
+        Boolean isAllFieldsInput = false;
+        if (mDate.getText().toString().trim().length() != 0 &&
+                mTime.getText().toString().trim().length() != 0 &&
+                mRoad.getText().toString().trim().length() != 0 &&
+                mSuburb.getText().toString().trim().length() != 0 &&
+                mCity.getText().toString().trim().length() != 0 &&
+                mPostcode.getText().toString().trim().length() != 0 &&
+                mState.getText().toString().trim().length() != 0 &&
+                mCountry.getText().toString().trim().length() != 0 ) {
+            isAllFieldsInput = true;
+        }
+        return isAllFieldsInput;
+    }
 }

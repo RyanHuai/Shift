@@ -15,19 +15,19 @@ import retrofit2.http.POST;
 
 public interface APIService {
 
-    @Headers("Authorization: Deputy Ryan")
+    @Headers("Authorization: Deputy RyanTest")
     @GET("dmc/business")
     Call<Business>  saveBusiness();
 
-    @Headers("Authorization: Deputy Ryan")
+    @Headers("Authorization: Deputy RyanTest")
     @POST("dmc/shift/start")
     Call<String> saveStartShift(@Body InputShift inputShift);
 
-    @Headers("Authorization: Deputy Ryan")
+    @Headers("Authorization: Deputy RyanTest")
     @POST("dmc/shift/end")
     Call<String> saveEndShift(@Body InputShift inputShift);
 
-    @Headers("Authorization: Deputy Ryan")
+    @Headers("Authorization: Deputy RyanTest")
     @GET("dmc/shifts")
     Call<List<Shift>>  saveShifts();
 
