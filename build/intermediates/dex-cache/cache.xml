@@ -21,11 +21,20 @@
     </item>
     <item
         is-multidex="true"
+        jar="C:\Users\admin\.android\build-cache\8c7ef70ee94eacd53b20c3a62d01df27dc823c89\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="914f5d3e3ace66080e59613708f06d129a222e25">
+        <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_3c519893a47173247426f69b17d830a454619abb\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.0"
-        sha1="eb2f02b5b2faefe1d5524e3daeb8787d851a0b8f">
+        sha1="030a7ee30098134ea9f55a0ae2b2a5d92d687cc3">
         <dex dex="E:\Ryan\project\Android\MyApp\Shift\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_7538f7abd84cbe4b2d4599684ce6e5a192ec2905\classes.dex" />
     </item>
     <item

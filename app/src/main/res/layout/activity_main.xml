@@ -19,35 +19,9 @@
         android:textColor="@android:color/darker_gray"/>
 
     <LinearLayout
-        android:id="@+id/businessLayout"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <ImageView
-            android:id="@+id/businessImage"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/businessText"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            tools:text="DEPUTY"
-            android:textColor="@android:color/holo_blue_light"
-            android:textSize="30sp"
-            android:textAlignment="textStart"
-            android:gravity="start"/>
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/currentShiftLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:visibility="gone">
+        android:layout_height="100dp">
 
         <ImageView
             android:id="@+id/currentImageView"
@@ -69,7 +43,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:textColor="@android:color/holo_blue_dark"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="Start"/>
 
             <TextView
@@ -80,7 +54,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/currentStartLabel"
                 android:textColor="@android:color/black"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 tools:text="2017-07-31 14:23"/>
 
 
@@ -92,7 +66,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/currentDateAndTime"
                 android:textColor="@android:color/black"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 tools:text="3 Jean Wailes Ave, Rhodes NSW 2138, Australia"/>
 
 
@@ -154,233 +128,238 @@
         android:visibility="gone"
         android:textColor="@android:color/holo_blue_dark"/>
 
-    <RelativeLayout
+    <ScrollView
         android:id="@+id/startEndLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/layoutLabel"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start a shift"
-            android:textColor="@android:color/holo_blue_dark"
-            android:textSize="20sp"/>
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/dateLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layoutLabel"
-            android:text="Date:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/layoutLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="20sp"
+                tools:text="Start a shift"/>
 
-        <Button
-            android:id="@+id/dateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calendar"
-            android:layout_alignBaseline="@+id/dateLabel"
-            android:layout_alignBottom="@+id/dateLabel"
-            android:layout_toRightOf="@+id/dateLabel"
-            android:layout_toEndOf="@+id/dateLabel"/>
+            <TextView
+                android:id="@+id/dateLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layoutLabel"
+                android:text="Date:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/DateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/dateLabel"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/dateButton"
-            android:layout_toRightOf="@+id/dateButton"
-            tools:text="2017-07-31"
-            android:textColor="@android:color/holo_blue_light"
-            android:textSize="16sp"
-            />
+            <Button
+                android:id="@+id/dateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/dateLabel"
+                android:layout_alignBottom="@+id/dateLabel"
+                android:layout_toEndOf="@+id/dateLabel"
+                android:layout_toRightOf="@+id/dateLabel"
+                android:text="Calendar"/>
 
-        <TextView
-            android:id="@+id/timeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/dateButton"
-            android:text="Time:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/DateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/dateLabel"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/dateButton"
+                android:layout_toRightOf="@+id/dateButton"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="16sp"
+                tools:text="2017-07-31"
+                />
 
-        <Button
-            android:id="@+id/timeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/dateButton"
-            android:layout_toRightOf="@+id/timeLabel"
-            android:layout_toEndOf="@+id/timeLabel"
-            android:layout_alignBaseline="@+id/timeLabel"
-            android:text="Clock"/>
+            <TextView
+                android:id="@+id/timeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dateButton"
+                android:text="Time:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/TimeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/dateButton"
-            android:layout_toRightOf="@+id/timeButton"
-            android:layout_toEndOf="@+id/timeButton"
-            android:layout_alignBaseline="@+id/timeLabel"
-            android:layout_centerVertical="true"
-            tools:text="09:11"
-            android:textColor="@android:color/holo_blue_light"
-            android:textSize="16sp"/>
+            <Button
+                android:id="@+id/timeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/timeLabel"
+                android:layout_below="@+id/dateButton"
+                android:layout_toEndOf="@+id/timeLabel"
+                android:layout_toRightOf="@+id/timeLabel"
+                android:text="Clock"/>
 
-        <TextView
-            android:id="@+id/roadLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/timeButton"
-            android:text="Street/Road/Ave:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/TimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/timeLabel"
+                android:layout_below="@+id/dateButton"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/timeButton"
+                android:layout_toRightOf="@+id/timeButton"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="16sp"
+                tools:text="09:11"/>
 
-        <EditText
-            android:id="@+id/editRoadText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/timeButton"
-            android:layout_toRightOf="@+id/roadLabel"
-            android:layout_toEndOf="@+id/roadLabel"
-            android:layout_alignBaseline="@+id/roadLabel"
-            android:layout_centerVertical="true"
-            android:ems="10"
-            android:hint="Enter a street/road/ave"/>
+            <TextView
+                android:id="@+id/roadLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/timeButton"
+                android:text="Street/Road/Ave:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/suburbLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editRoadText"
-            android:text="Suburb:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/editRoadText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/roadLabel"
+                android:layout_below="@+id/timeButton"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/roadLabel"
+                android:layout_toRightOf="@+id/roadLabel"
+                android:ems="10"
+                android:hint="Enter a street/road/ave"/>
 
-        <EditText
-            android:id="@+id/editSuburbText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editRoadText"
-            android:layout_toRightOf="@+id/suburbLabel"
-            android:layout_toEndOf="@+id/suburbLabel"
-            android:layout_alignBaseline="@+id/suburbLabel"
-            android:layout_centerVertical="true"
-            android:ems="10"
-            android:hint="Enter a suburb"/>
+            <TextView
+                android:id="@+id/suburbLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editRoadText"
+                android:text="Suburb:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/cityLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editSuburbText"
-            android:text="City:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/editSuburbText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/suburbLabel"
+                android:layout_below="@+id/editRoadText"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/suburbLabel"
+                android:layout_toRightOf="@+id/suburbLabel"
+                android:ems="10"
+                android:hint="Enter a suburb"/>
 
-        <EditText
-            android:id="@+id/editCityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editSuburbText"
-            android:layout_toRightOf="@+id/cityLabel"
-            android:layout_toEndOf="@+id/cityLabel"
-            android:layout_alignBaseline="@+id/cityLabel"
-            android:layout_centerVertical="true"
-            android:ems="10"
-            android:hint="Enter a city"/>
+            <TextView
+                android:id="@+id/cityLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editSuburbText"
+                android:text="City:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/postcodeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editCityText"
-            android:text="Postcode:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/editCityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/cityLabel"
+                android:layout_below="@+id/editSuburbText"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/cityLabel"
+                android:layout_toRightOf="@+id/cityLabel"
+                android:ems="10"
+                android:hint="Enter a city"/>
 
-        <EditText
-            android:id="@+id/editPostcodeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editCityText"
-            android:layout_toRightOf="@+id/postcodeLabel"
-            android:layout_toEndOf="@+id/postcodeLabel"
-            android:layout_alignBaseline="@+id/postcodeLabel"
-            android:layout_centerVertical="true"
-            android:ems="10"
-            android:hint="Enter a city"
-            android:inputType="textPostalAddress"/>
+            <TextView
+                android:id="@+id/postcodeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editCityText"
+                android:text="Postcode:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/stateLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editPostcodeText"
-            android:text="State:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/editPostcodeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/postcodeLabel"
+                android:layout_below="@+id/editCityText"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/postcodeLabel"
+                android:layout_toRightOf="@+id/postcodeLabel"
+                android:ems="10"
+                android:hint="Enter a postcode"
+                android:inputType="textPostalAddress"/>
 
-        <EditText
-            android:id="@+id/editStateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editPostcodeText"
-            android:layout_toRightOf="@+id/stateLabel"
-            android:layout_toEndOf="@+id/stateLabel"
-            android:layout_alignBaseline="@+id/stateLabel"
-            android:layout_centerVertical="true"
-            android:ems="10"
-            android:hint="Enter a state"/>
+            <TextView
+                android:id="@+id/stateLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editPostcodeText"
+                android:text="State:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/countryLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editStateText"
-            android:text="Country:"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/editStateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/stateLabel"
+                android:layout_below="@+id/editPostcodeText"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/stateLabel"
+                android:layout_toRightOf="@+id/stateLabel"
+                android:ems="10"
+                android:hint="Enter a state"/>
 
-        <EditText
-            android:id="@+id/editCountryText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editStateText"
-            android:layout_toRightOf="@+id/countryLabel"
-            android:layout_toEndOf="@+id/countryLabel"
-            android:layout_alignBaseline="@+id/countryLabel"
-            android:layout_centerVertical="true"
-            android:ems="10"
-            android:hint="Enter a country"
-            android:inputType="textPostalAddress"/>
+            <TextView
+                android:id="@+id/countryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editStateText"
+                android:text="Country:"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"/>
 
-        <Button
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editCountryText"
-            android:layout_marginLeft="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="Cancel"/>
+            <EditText
+                android:id="@+id/editCountryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/countryLabel"
+                android:layout_below="@+id/editStateText"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/countryLabel"
+                android:layout_toRightOf="@+id/countryLabel"
+                android:ems="10"
+                android:hint="Enter a country"
+                android:inputType="textPostalAddress"/>
 
-        <Button
-            android:id="@+id/confirmButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editCountryText"
-            android:layout_marginRight="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:text="Confirm"/>
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/editCountryText"
+                android:layout_marginLeft="30dp"
+                android:text="Cancel"/>
+
+            <Button
+                android:id="@+id/confirmButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/editCountryText"
+                android:layout_marginRight="30dp"
+                android:text="Confirm"/>
 
 
-    </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

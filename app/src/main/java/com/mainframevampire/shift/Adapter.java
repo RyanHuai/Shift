@@ -95,7 +95,7 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     String country = addresses.get(0).getCountryName();
                     String postalCode = addresses.get(0).getPostalCode();
                     String knownName = addresses.get(0).getFeatureName();
-                    mStartLocation.setText(address + city + state + "," + postalCode + country);
+                    mStartLocation.setText(address + ","+ city + " "+ state + "," + postalCode + " "+ country);
                 } catch (IOException e) {
                     e.printStackTrace();
                     mStartLocation.setText("Location not available");
@@ -116,16 +116,13 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 geocoder = new Geocoder(mContext, Locale.getDefault());
                 try {
                     addresses = geocoder.getFromLocation(dbEndLatitude,dbEndLongitude, 1);
-                    Log.d("end address:", addresses.size() + "");
-                    Log.d("end dbEndLatitude:", dbEndLatitude + "");
-                    Log.d("end dbEndLongitude:", dbEndLongitude + "");
                     String address = addresses.get(0).getAddressLine(0);
                     String city = addresses.get(0).getLocality();
                     String state = addresses.get(0).getAdminArea();
                     String country = addresses.get(0).getCountryName();
                     String postalCode = addresses.get(0).getPostalCode();
                     String knownName = addresses.get(0).getFeatureName();
-                    mEndLocation.setText(address + city + state + "," + postalCode + country);
+                    mEndLocation.setText(address + ","+ city + " "+ state + "," + postalCode + " "+ country);
                 } catch (IOException e) {
                     e.printStackTrace();
                     mEndLocation.setText("Location not available");
