@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Shift</string>
+    <string name="google_maps_key">AIzaSyAkaGGRncyT5qyIWFvgtSKun72zO0A3j3E</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.mainframevampire.shift;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mainframevampire.shift.data.model.Shift;
+import com.mainframevampire.shift.ui.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -57,6 +59,7 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private TextView mEndDateAndTime;
         private TextView mEndLocation;
+        private Shift mShift;
 
         private LinearLayout mDetailShiftLayout;
 
@@ -76,6 +79,7 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         private void bindView(int position) {
+            mShift = mShifts.get(position);
             Picasso.with(mContext).load(mShifts.get(position).getImage()).into(mImageView);
             String startDate = getDate(mShifts.get(position).getStart());
             String startTime = getTime(mShifts.get(position).getStart());
@@ -135,7 +139,9 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-
+            Intent intent = new Intent(mContext, DetailActivity.class);
+            intent.putExtra(DetailActivity.SHIFT_DETAIL, mShift);
+            mContext.startActivity(intent);
         }
     }
 
