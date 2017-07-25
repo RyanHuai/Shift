@@ -41,6 +41,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -117,6 +118,8 @@ public class MainActivity extends AppCompatActivity
     private Button mCancelButton;
     private Button mConfirmButton;
 
+    private ProgressBar mLoadingProgressBar;
+
     private boolean mShowStartLayout = true;
     private boolean mIsStart = true;
 
@@ -170,6 +173,8 @@ public class MainActivity extends AppCompatActivity
         mCancelButton = (Button) findViewById(R.id.cancelButton);
         mConfirmButton = (Button) findViewById(R.id.confirmButton);
         mStartEndLayout.setVisibility(View.GONE);
+
+        mLoadingProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -483,9 +488,11 @@ public class MainActivity extends AppCompatActivity
 
     private void loadShiftsFromWeb() {
         mRecyclerView.setVisibility(View.VISIBLE);
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
         mAPIService.saveShifts().enqueue(new Callback<ArrayList<Shift>>() {
             @Override
             public void onResponse(Call<ArrayList<Shift>> call, Response<ArrayList<Shift>> response) {
+                mLoadingProgressBar.setVisibility(View.GONE);
                 if(response.isSuccessful()) {
                     ArrayList<Shift> shifts = response.body();
                     if (shifts != null) {
@@ -531,8 +538,15 @@ public class MainActivity extends AppCompatActivity
                             Log.d("mShiftDetails b:", mShiftDetails.size() + "");
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
                             mRecyclerView.setLayoutManager(linearLayoutManager);
-                            mAdapter = new Adapter(MainActivity.this, mShiftDetails);
+                            mAdapter = new Adapter(MainActivity.this, mShiftDetails, mRecyclerView);
                             mRecyclerView.setAdapter(mAdapter);
+
+                            mAdapter.setOnLoadListener(new Adapter.OnLoadListener() {
+                                @Override
+                                public void onLoadData() {
+                                    loadShiftsFromWeb();
+                                }
+                            });
 
                             //start LoadAddressService to get the address detail
                             for (ShiftDetail shiftdetail : mShiftDetails) {
@@ -598,6 +612,14 @@ public class MainActivity extends AppCompatActivity
                                     mAdapter.updateData(shiftDetails);
                                     mShiftDetails = shiftDetails;
                                     mAdapter.notifyDataSetChanged();
+
+                                    //start LoadAddressService to get the address detail
+                                    for (ShiftDetail shiftdetail : mShiftDetails) {
+                                        Intent addressIntent = new Intent(MainActivity.this, LoadAddressService.class);
+                                        addressIntent.putExtra(MESSAGE_SOURCE, "LIST");
+                                        addressIntent.putExtra(SHIFT_DETAIL, shiftdetail);
+                                        startService(addressIntent);
+                                    }
                                 }
                             }
                         }
@@ -611,6 +633,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<ArrayList<Shift>> call, Throwable t) {
+                mLoadingProgressBar.setVisibility(View.GONE);
                 Log.e(TAG, "Unable to submit saveShifts to API.");
             }
         });
@@ -640,7 +663,7 @@ public class MainActivity extends AppCompatActivity
 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
             mRecyclerView.setLayoutManager(linearLayoutManager);
-            mAdapter = new Adapter(MainActivity.this, mShiftDetails);
+            mAdapter = new Adapter(MainActivity.this, mShiftDetails, mRecyclerView);
             mRecyclerView.setAdapter(mAdapter);
         } else {
             showNetworkNotAvailableDialog(

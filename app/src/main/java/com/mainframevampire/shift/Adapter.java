@@ -6,6 +6,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,12 +31,64 @@ import java.util.Locale;
 
 public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public interface OnLoadListener {
+        void onLoadData();
+    }
     private ArrayList<ShiftDetail> mShiftDetails;
     private Context mContext;
 
-    public Adapter(Context context, ArrayList<ShiftDetail>  shiftdetails) {
+    private OnLoadListener mOnloadListener;
+
+    public Adapter(Context context, ArrayList<ShiftDetail>  shiftdetails, RecyclerView recyclerView) {
         mContext = context;
         mShiftDetails = shiftdetails;
+
+        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                private boolean isUserScrolling = false;
+                private boolean isListGoingUp = true;
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    //check if the top most is visible and user is scrolling
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        isUserScrolling = true;
+                        if (isListGoingUp) {
+                            if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (isListGoingUp) {
+                                            if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                                                if (mOnloadListener != null) {
+                                                    mOnloadListener.onLoadData();
+                                                }
+                                            }
+                                        }
+                                    }
+                                },50);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (isUserScrolling) {
+                        if (dy > 0) {
+                            isListGoingUp = false;
+                        }
+                        else {
+                            isListGoingUp = true;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -174,6 +228,10 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void updateData(ArrayList<ShiftDetail> shiftDetails) {
         mShiftDetails = shiftDetails;
+    }
+
+    public void setOnLoadListener(OnLoadListener onloadListener) {
+        mOnloadListener = onloadListener;
     }
 
 }
