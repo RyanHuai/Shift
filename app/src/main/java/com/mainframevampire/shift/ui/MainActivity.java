@@ -3,13 +3,16 @@ package com.mainframevampire.shift.ui;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -25,6 +28,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +54,7 @@ import com.mainframevampire.shift.R;
 import com.mainframevampire.shift.data.model.Business;
 import com.mainframevampire.shift.data.model.InputShift;
 import com.mainframevampire.shift.data.model.Shift;
+import com.mainframevampire.shift.data.model.ShiftDetail;
 import com.mainframevampire.shift.data.remote.APIService;
 import com.mainframevampire.shift.data.remote.ApiUtils;
 import com.mainframevampire.shift.database.ShiftsDataSource;
@@ -84,7 +89,10 @@ public class MainActivity extends AppCompatActivity
     public static final String TABLE_NAME = "TABLE_NAME";
     public static final String BUSINESS_NAME = "BUSINESS_NAME";
     public static final String BUSINESS_LOGO = "BUSINESS_LOGO";
-    private static String dateString = "";
+    public static final String SHIFT_DETAIL = "SHIFT_DETAIL" ;
+    public static final String BROADCAST_ACTION = "com.mainframevampire.shift.BROADCAST";
+    public static final String KEY_MESSAGE = "com.mainframevampire.shift.MESSAGE";
+    public static final String MESSAGE_SOURCE = "MESSAGE_SOURCE";
     private APIService mAPIService;
 
     //view variable
@@ -117,8 +125,8 @@ public class MainActivity extends AppCompatActivity
     private boolean mIsStart = true;
 
     private RecyclerView mRecyclerView;
-    private ArrayList<Shift> mShifts;
     private Adapter mAdapter;
+    private ArrayList<ShiftDetail> mShiftDetails;
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
@@ -164,6 +172,7 @@ public class MainActivity extends AppCompatActivity
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
+        mShiftDetails = new ArrayList<>();
 
         if (!isNetworkAvailable()) {
             mOfflineModeLabel.setVisibility(View.VISIBLE);
@@ -255,35 +264,77 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
-        //mAPIService = ApiUtils.getAPIService();
-
-//        loadBusinessFromWeb();
-//        loadShiftsFromWeb();
-//        InputShift inputShift = new InputShift(
-//                "2017-01-17T06:35:57+00:00",
-//                "-23.832270",
-//                "5555.084356"
-//        );
-//        startShift(inputShift);
-//
-//        InputShift inputEndShift = new InputShift(
-//                "2017-01-24T06:35:57+00:00",
-//                "-23.832270",
-//                "5555.084356"
-//        );
-//        endShift(inputEndShift);
     }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ShiftDetail shiftDetail = intent.getParcelableExtra(KEY_MESSAGE);
+            String messageSource = intent.getStringExtra(MESSAGE_SOURCE);
+            Log.d("receiver id ", shiftDetail.getId() + "");
+            Log.d("receiver message ", messageSource);
+            if (messageSource.equals("LIST")) {
+                for (int i = 0; i < mShiftDetails.size(); i++) {
+                    if (mShiftDetails.get(i).getId() == shiftDetail.getId()) {
+                        mShiftDetails.get(i).setStartAddress(shiftDetail.getStartAddress());
+                        mShiftDetails.get(i).setStartCity(shiftDetail.getStartCity());
+                        mShiftDetails.get(i).setStartState(shiftDetail.getStartState());
+                        mShiftDetails.get(i).setStartCountry(shiftDetail.getStartCountry());
+                        mShiftDetails.get(i).setStartPostcode(shiftDetail.getStartPostcode());
+                        mShiftDetails.get(i).setStartLocationStatus(shiftDetail.getStartLocationStatus());
+                        mShiftDetails.get(i).setEndAddress(shiftDetail.getEndAddress());
+                        mShiftDetails.get(i).setEndCity(shiftDetail.getEndCity());
+                        mShiftDetails.get(i).setEndState(shiftDetail.getEndState());
+                        mShiftDetails.get(i).setEndCountry(shiftDetail.getEndCountry());
+                        mShiftDetails.get(i).setEndPostcode(shiftDetail.getEndPostcode());
+                        mShiftDetails.get(i).setEndLocationStatus(shiftDetail.getEndLocationStatus());
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                }
+            }
+            else if(messageSource.equals("CURRENT")) {
+                switch (shiftDetail.getStartLocationStatus()) {
+                    case "0":
+                        mCurrentLocation.setText(
+                                shiftDetail.getStartAddress() + "," +
+                                        shiftDetail.getStartCity() + " " +
+                                        shiftDetail.getStartState() + "," +
+                                        shiftDetail.getStartPostcode() + " " +
+                                        shiftDetail.getStartCountry());
+                        break;
+                    case "1":
+                        mCurrentLocation.setText("Location not available");
+                        break;
+                    case "2":
+                        mCurrentLocation.setText("cound't find location without network");
+                        break;
+                    case "3":
+                        mCurrentLocation.setText("downloading location");
+                }
+            }
+
+        }
+    };
 
     @Override
     protected void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
+                new IntentFilter(BROADCAST_ACTION));
         if (!isNetworkAvailable()) {
             mOfflineModeLabel.setVisibility(View.VISIBLE);
         } else {
             mOfflineModeLabel.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+    }
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -342,8 +393,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private class SetBarIconInBackGround extends AsyncTask<String, Void, Void> {
-
-
         Bitmap bitmap;
 
         @Override
@@ -361,7 +410,6 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
@@ -371,7 +419,6 @@ public class MainActivity extends AppCompatActivity
             getSupportActionBar().setLogo(drawable);
 
         }
-
     }
 
     private void loadShiftsFromWeb() {
@@ -387,10 +434,10 @@ public class MainActivity extends AppCompatActivity
                         intent.putExtra(TABLE_NAME, "SHIFTS");
                         intent.putParcelableArrayListExtra(SHIFTS, shifts);
                         startService(intent);
-
                         //sort shifts by ID DESC
                         Collections.sort(shifts);
                         Log.d(TAG, "shifts.get(0).getEnd()" + shifts.get(0).getEnd());
+
                         if (shifts.get(0).getEnd().equals("")) {
                             //shift in progress
                             mShowStartLayout = false;
@@ -405,10 +452,36 @@ public class MainActivity extends AppCompatActivity
                             mShowStartLayout = true;
                             showStartButton();
                         }
+
+                        for (Shift shift: shifts) {
+                            ShiftDetail shiftDetail = new ShiftDetail(
+                                    shift.getId(),
+                                    shift.getStart(),
+                                    shift.getEnd(),
+                                    shift.getStartLatitude(),
+                                    shift.getStartLongitude(),
+                                    "3",
+                                    shift.getEndLatitude(),
+                                    shift.getEndLongitude(),
+                                    "3",
+                                    shift.getImage());
+                            mShiftDetails.add(shiftDetail);
+                        }
+
+                        Log.d("mShiftDetails b:", mShiftDetails.size() + "");
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
                         mRecyclerView.setLayoutManager(linearLayoutManager);
-                        mAdapter = new Adapter(MainActivity.this, shifts);
+                        mAdapter = new Adapter(MainActivity.this, mShiftDetails);
                         mRecyclerView.setAdapter(mAdapter);
+
+                        //start LoadAddressService to get the address detail
+                        for (ShiftDetail shiftdetail: mShiftDetails) {
+                            Intent addressIntent = new Intent(MainActivity.this, LoadAddressService.class);
+                            addressIntent.putExtra(MESSAGE_SOURCE,"LIST");
+                            addressIntent.putExtra(SHIFT_DETAIL, shiftdetail);
+                            startService(addressIntent);
+                        }
+
                     } else {
                         mIsStart = true;
                         mShowStartLayout = true;
@@ -423,6 +496,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
+
 
     private void loadShiftsFromLocalDatabase() {
         ShiftsDataSource dataSource = new ShiftsDataSource(this);
@@ -443,9 +518,25 @@ public class MainActivity extends AppCompatActivity
                 mShowStartLayout = true;
                 showStartButton();
             }
+
+            for (Shift shift: shifts) {
+                ShiftDetail shiftDetail = new ShiftDetail(
+                        shift.getId(),
+                        shift.getStart(),
+                        shift.getEnd(),
+                        shift.getStartLatitude(),
+                        shift.getStartLongitude(),
+                        "3",
+                        shift.getEndLatitude(),
+                        shift.getEndLongitude(),
+                        "3",
+                        shift.getImage());
+                mShiftDetails.add(shiftDetail);
+            }
+
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
             mRecyclerView.setLayoutManager(linearLayoutManager);
-            mAdapter = new Adapter(MainActivity.this, shifts);
+            mAdapter = new Adapter(MainActivity.this, mShiftDetails);
             mRecyclerView.setAdapter(mAdapter);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -546,27 +637,24 @@ public class MainActivity extends AppCompatActivity
         String startTime = shift.getStart().substring(11, 19);
         mCurrentDateAndTime.setText(startDate + " " + startTime);
 
-        if (isNetworkAvailable()) {
-            Double latitude = Double.parseDouble(shift.getStartLatitude());
-            Double longitude = Double.parseDouble(shift.getStartLongitude());
-            if (isValidLatLng(latitude, longitude)) {
-                Geocoder geocoder;
-                List<Address> addresses;
-                geocoder = new Geocoder(this, Locale.getDefault());
-                try {
-                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                    String address = addresses.get(0).getAddressLine(0);
-                    mCurrentLocation.setText(address);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    mCurrentLocation.setText("Location not available");
-                }
-            } else {
-                mCurrentLocation.setText("Location not available");
-            }
-        } else {
-            mCurrentLocation.setText("cound't find location without network");
-        }
+        ShiftDetail shiftDetail = new ShiftDetail(
+                shift.getId(),
+                shift.getStart(),
+                shift.getEnd(),
+                shift.getStartLatitude(),
+                shift.getStartLongitude(),
+                "3",
+                shift.getEndLatitude(),
+                shift.getEndLongitude(),
+                "3",
+                shift.getImage());
+
+
+        //start LoadAddressService to get the address detail
+        Intent Intent = new Intent(MainActivity.this, LoadAddressService.class);
+        Intent.putExtra(MESSAGE_SOURCE,"CURRENT");
+        Intent.putExtra(SHIFT_DETAIL, shiftDetail);
+        startService(Intent);
 
     }
 

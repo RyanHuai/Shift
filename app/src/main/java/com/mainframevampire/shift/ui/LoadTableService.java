@@ -47,8 +47,5 @@ public class LoadTableService extends IntentService {
             }
         }
 
-
-
-
     }
 }

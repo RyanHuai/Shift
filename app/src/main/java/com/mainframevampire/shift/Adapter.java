@@ -18,21 +18,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mainframevampire.shift.data.model.Shift;
+import com.mainframevampire.shift.data.model.ShiftDetail;
 import com.mainframevampire.shift.ui.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Shift> mShifts;
+    private ArrayList<ShiftDetail> mShiftDetails;
     private Context mContext;
 
-    public Adapter(Context context, List<Shift> shifts) {
+    public Adapter(Context context, ArrayList<ShiftDetail>  shiftdetails) {
         mContext = context;
-        mShifts = shifts;
+        mShiftDetails = shiftdetails;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mShifts.size();
+        return mShiftDetails.size();
     }
 
     public class BindViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -81,77 +83,64 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         private void bindView(int position) {
-            mShift = mShifts.get(position);
-            Picasso.with(mContext).load(mShifts.get(position).getImage()).into(mImageView);
-            String startDate = getDate(mShifts.get(position).getStart());
-            String startTime = getTime(mShifts.get(position).getStart());
+            mShift = new Shift(
+                    mShiftDetails.get(position).getId(),
+                    mShiftDetails.get(position).getStart(),
+                    mShiftDetails.get(position).getEnd(),
+                    mShiftDetails.get(position).getStartLatitude(),
+                    mShiftDetails.get(position).getStartLongitude(),
+                    mShiftDetails.get(position).getEndLatitude(),
+                    mShiftDetails.get(position).getEndLongitude(),
+                    mShiftDetails.get(position).getImage());
+
+            Picasso.with(mContext).load(mShiftDetails.get(position).getImage()).into(mImageView);
+            String startDate = getDate(mShiftDetails.get(position).getStart());
+            String startTime = getTime(mShiftDetails.get(position).getStart());
             mStartDateAndTime.setText(startDate + " " + startTime);
 
-            if (isNetworkAvailable()) {
-                Double dbStartLatitude = Double.parseDouble(mShifts.get(position).getStartLatitude());
-                Double dbStartLongitude = Double.parseDouble(mShifts.get(position).getStartLongitude());
-                if (isValidLatLng(dbStartLatitude, dbStartLongitude)) {
-                    Geocoder geocoder;
-                    List<Address> addresses;
-                    geocoder = new Geocoder(mContext, Locale.getDefault());
-                    try {
-                        addresses = geocoder.getFromLocation(dbStartLatitude, dbStartLongitude, 1);
-                        if (addresses.size() > 0) {
-                            String address = addresses.get(0).getAddressLine(0);
-                            String city = addresses.get(0).getLocality();
-                            String state = addresses.get(0).getAdminArea();
-                            String country = addresses.get(0).getCountryName();
-                            String postalCode = addresses.get(0).getPostalCode();
-                            String knownName = addresses.get(0).getFeatureName();
-                            mStartLocation.setText(address + "," + city + " " + state + "," + postalCode + " " + country);
-                        } else {
-                            mStartLocation.setText("Location not available");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        mStartLocation.setText("Location not available");
-                    }
-                } else {
-                    mStartLocation.setText("Location not available");
-                }
-            } else {
-                mStartLocation.setText("cound't find location without network");
-            }
-
-            String endDate = getDate(mShifts.get(position).getEnd());
-            String endTime = getTime(mShifts.get(position).getEnd());
+            String endDate = getDate(mShiftDetails.get(position).getEnd());
+            String endTime = getTime(mShiftDetails.get(position).getEnd());
             mEndDateAndTime.setText(endDate + " " + endTime );
 
-            if (isNetworkAvailable()) {
-                Double dbEndLatitude = Double.parseDouble(mShifts.get(position).getEndLatitude());
-                Double dbEndLongitude = Double.parseDouble(mShifts.get(position).getEndLongitude());
-                if (isValidLatLng(dbEndLatitude, dbEndLongitude)) {
-                    Geocoder geocoder;
-                    List<Address> addresses;
-                    geocoder = new Geocoder(mContext, Locale.getDefault());
-                    try {
-                        addresses = geocoder.getFromLocation(dbEndLatitude, dbEndLongitude, 1);
-                        if (addresses.size() > 0) {
-                            String address = addresses.get(0).getAddressLine(0);
-                            String city = addresses.get(0).getLocality();
-                            String state = addresses.get(0).getAdminArea();
-                            String country = addresses.get(0).getCountryName();
-                            String postalCode = addresses.get(0).getPostalCode();
-                            String knownName = addresses.get(0).getFeatureName();
-                            mEndLocation.setText(address + "," + city + " " + state + "," + postalCode + " " + country);
-                        } else {
-                            mEndLocation.setText("Location not available");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        mEndLocation.setText("Location not available");
-                    }
-                } else {
-                    mEndLocation.setText("Location not available");
-                }
-            } else {
-                mEndLocation.setText("cound't find location without network");
+            switch (mShiftDetails.get(position).getStartLocationStatus()) {
+                case "0":
+                    String address = mShiftDetails.get(position).getStartAddress();
+                    String city = mShiftDetails.get(position).getStartCity();
+                    String state = mShiftDetails.get(position).getStartState();
+                    String country = mShiftDetails.get(position).getStartCountry();
+                    String postalCode = mShiftDetails.get(position).getStartPostcode();
+                    mStartLocation.setText(address + "," + city + " " + state + "," + postalCode + " " + country);
+                    break;
+                case "1":
+                    mStartLocation.setText("Location not available");
+                    break;
+                case "2":
+                    mStartLocation.setText("cound't find location without network");
+                    break;
+                case "3":
+                    mStartLocation.setText("downloading location");
             }
+
+            switch (mShiftDetails.get(position).getEndLocationStatus()) {
+                case "0":
+                    String address = mShiftDetails.get(position).getEndAddress();
+                    String city = mShiftDetails.get(position).getEndCity();
+                    String state = mShiftDetails.get(position).getEndState();
+                    String country = mShiftDetails.get(position).getEndCountry();
+                    String postalCode = mShiftDetails.get(position).getEndPostcode();
+                    mEndLocation.setText(address + "," + city + " " + state + "," + postalCode + " " + country);
+                    break;
+                case "1":
+                    mEndLocation.setText("Location not available");
+                    break;
+                case "2":
+                    mEndLocation.setText("cound't find location without network");
+                    break;
+                case "3":
+                    mEndLocation.setText("downloading location");
+            }
+
+            
         }
 
 
@@ -182,16 +171,5 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         return true;
     }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        boolean isAvailable = false;
-        if (networkInfo != null && networkInfo.isConnected()){
-            isAvailable = true;
-        }
-        return isAvailable;
-    }
-
 
 }

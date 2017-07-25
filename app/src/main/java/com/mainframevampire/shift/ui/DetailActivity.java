@@ -64,15 +64,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         LatLng endLocation = new LatLng(Double.parseDouble(mEndLatitude), Double.parseDouble(mEndLongtitude));
         googleMap.addMarker(new MarkerOptions().position(endLocation)
                 .title(endTitle));
-//        // and move the map's camera to the end location.
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(endLocation,15));
-//        // Zoom in, animating the camera.
-//        googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-//        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-//
-//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
+        //zome two marker as close as possible
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(startLocation);
         builder.include(endLocation);

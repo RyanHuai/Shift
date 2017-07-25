@@ -34,6 +34,7 @@
         </activity>
 
         <service android:name=".ui.LoadTableService"/>
+        <service android:name=".ui.LoadAddressService"/>
     </application>
 
 </manifest>
