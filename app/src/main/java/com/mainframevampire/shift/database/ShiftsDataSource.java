@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.mainframevampire.shift.data.model.Business;
 import com.mainframevampire.shift.data.model.Shift;
+import com.mainframevampire.shift.data.model.ShiftDetail;
 
+import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +51,7 @@ public class ShiftsDataSource {
         close(database);
     }
 
-    public void createShiftContents(Shift shift) {
+    public void createShiftContents(ShiftDetail shiftDetail) {
         SQLiteDatabase database = open();
         database.beginTransaction();
 
@@ -57,17 +59,29 @@ public class ShiftsDataSource {
         String currentDate = dateFormat.format(new Date());
 
         ContentValues productValues = new ContentValues();
-        productValues.put(ShiftsSQLiteHelper.COLUMN_ID, shift.getId());
-        productValues.put(ShiftsSQLiteHelper.COLUMN_START, shift.getStart());
-        productValues.put(ShiftsSQLiteHelper.COLUMN_END, shift.getEnd());
-        productValues.put(ShiftsSQLiteHelper.COLUMN_START_LATITUDE, shift.getStartLatitude());
-        productValues.put(ShiftsSQLiteHelper.COLUMN_START_LONGITUDE, shift.getStartLongitude());
-        productValues.put(ShiftsSQLiteHelper.COLUMN_END_LATITUDE, shift.getEndLatitude());
-        productValues.put(ShiftsSQLiteHelper.COLUMN_END_LONGITUDE, shift.getEndLongitude());
-        productValues.put(ShiftsSQLiteHelper.COLUMN_IMAGE, shift.getImage());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_ID, shiftDetail.getId());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START, shiftDetail.getStart());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END, shiftDetail.getEnd());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_LATITUDE, shiftDetail.getStartLatitude());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_LONGITUDE, shiftDetail.getStartLongitude());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_ROAD, shiftDetail.getStartAddress());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_CITY, shiftDetail.getStartCity());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_STATE, shiftDetail.getStartState());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_POSTCODE, shiftDetail.getStartPostcode());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_COUNTRY, shiftDetail.getStartCountry());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_START_LOCATION_STATUS, shiftDetail.getStartLocationStatus());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_LATITUDE, shiftDetail.getEndLatitude());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_LONGITUDE, shiftDetail.getEndLongitude());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_ROAD, shiftDetail.getEndAddress());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_CITY, shiftDetail.getEndCity());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_STATE, shiftDetail.getEndState());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_POSTCODE, shiftDetail.getEndPostcode());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_COUNTRY, shiftDetail.getEndCountry());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_END_LOCATION_STATUS, shiftDetail.getEndLocationStatus());
+        productValues.put(ShiftsSQLiteHelper.COLUMN_IMAGE, shiftDetail.getImage());
         productValues.put(ShiftsSQLiteHelper.COLUMN_SHIFT_LAST_UPDATE_DATE, currentDate);
 
-        database.insert(ShiftsSQLiteHelper.SHIFTS_TABLE, null, productValues);
+        database.insert(ShiftsSQLiteHelper.SHIFTS_DETAIL_TABLE, null, productValues);
 
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -93,7 +107,7 @@ public class ShiftsDataSource {
         close(database);
     }
 
-    public void updateShiftsTable(Shift shift) {
+    public void updateShiftsTable(ShiftDetail shiftDetail) {
         SQLiteDatabase database = open();
         database.beginTransaction();
 
@@ -101,19 +115,32 @@ public class ShiftsDataSource {
         String currentDate = dateFormat.format(new Date());
 
         ContentValues updateProductValue = new ContentValues();
-        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START, shift.getStart());
-        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END, shift.getEnd());
-        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_LATITUDE, shift.getStartLatitude());
-        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_LONGITUDE, shift.getStartLongitude());
-        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_LATITUDE, shift.getEndLatitude());
-        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_LONGITUDE, shift.getEndLongitude());
-        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_IMAGE, shift.getImage());
+
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START, shiftDetail.getStart());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END, shiftDetail.getEnd());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_LATITUDE, shiftDetail.getStartLatitude());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_LONGITUDE, shiftDetail.getStartLongitude());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_ROAD, shiftDetail.getStartAddress());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_CITY, shiftDetail.getStartCity());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_STATE, shiftDetail.getStartState());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_POSTCODE, shiftDetail.getStartPostcode());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_COUNTRY, shiftDetail.getStartCountry());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_START_LOCATION_STATUS, shiftDetail.getStartLocationStatus());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_LATITUDE, shiftDetail.getEndLatitude());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_LONGITUDE, shiftDetail.getEndLongitude());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_ROAD, shiftDetail.getEndAddress());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_CITY, shiftDetail.getEndCity());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_STATE, shiftDetail.getEndState());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_POSTCODE, shiftDetail.getEndPostcode());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_COUNTRY, shiftDetail.getEndCountry());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_END_LOCATION_STATUS, shiftDetail.getEndLocationStatus());
+        updateProductValue.put(ShiftsSQLiteHelper.COLUMN_IMAGE, shiftDetail.getImage());
         updateProductValue.put(ShiftsSQLiteHelper.COLUMN_SHIFT_LAST_UPDATE_DATE, currentDate);
 
 
-        database.update(ShiftsSQLiteHelper.SHIFTS_TABLE,
+        database.update(ShiftsSQLiteHelper.SHIFTS_DETAIL_TABLE,
                 updateProductValue,
-                " ID = " + "'" + shift.getId() + "'",
+                " ID = " + "'" + shiftDetail.getId() + "'",
                 null);
 
         database.setTransactionSuccessful();
@@ -141,59 +168,83 @@ public class ShiftsDataSource {
         return business;
     }
 
-    public ArrayList<Shift> readAllShiftsTable() {
+    public ArrayList<ShiftDetail> readAllShiftsTable() {
         SQLiteDatabase database = open();
 
         Cursor cursor = database.rawQuery(
-                "SELECT * FROM " + ShiftsSQLiteHelper.SHIFTS_TABLE +
+                "SELECT * FROM " + ShiftsSQLiteHelper.SHIFTS_DETAIL_TABLE +
                 " ORDER BY ID DESC" , null);
 
-        ArrayList<Shift> shifts = new ArrayList<>();
+        ArrayList<ShiftDetail> ShiftDetails = new ArrayList<>();
         if (cursor.moveToFirst()){
             do {
-                Shift shift  = new Shift(
+                ShiftDetail shiftDetail  = new ShiftDetail(
                         getIntFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_ID),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_LATITUDE),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_LONGITUDE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_ROAD),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_CITY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_STATE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_POSTCODE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_COUNTRY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_LOCATION_STATUS),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_LATITUDE),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_LONGITUDE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_ROAD),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_CITY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_STATE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_POSTCODE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_COUNTRY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_LOCATION_STATUS),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_IMAGE));
-                shifts.add(shift);
+                ShiftDetails.add(shiftDetail);
             } while (cursor.moveToNext());
         }
         cursor.close();
         close(database);
 
-        return shifts;
+        return ShiftDetails;
     }
 
-    public Shift readShiftTableByID(int id) {
+    public ShiftDetail readShiftTableByID(int id) {
         SQLiteDatabase database = open();
 
         Cursor cursor = database.rawQuery(
-                "SELECT * FROM " + ShiftsSQLiteHelper.SHIFTS_TABLE +
+                "SELECT * FROM " + ShiftsSQLiteHelper.SHIFTS_DETAIL_TABLE +
                         " WHERE ID =  " + id , null);
 
-        Shift shift = null;
+        ShiftDetail shiftDetail = null;
         if (cursor.moveToFirst()){
             do {
-                shift  = new Shift(
+                shiftDetail  = new ShiftDetail(
                         getIntFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_ID),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_LATITUDE),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_LONGITUDE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_ROAD),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_CITY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_STATE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_POSTCODE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_COUNTRY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_START_LOCATION_STATUS),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_LATITUDE),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_LONGITUDE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_ROAD),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_CITY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_STATE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_POSTCODE),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_COUNTRY),
+                        getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_END_LOCATION_STATUS),
                         getStringFromColumnName(cursor,ShiftsSQLiteHelper.COLUMN_IMAGE));
             } while (cursor.moveToNext());
         }
         cursor.close();
         close(database);
 
-        return shift;
+        return shiftDetail;
     }
 
     public int GetBusinessTableCount() {
@@ -212,7 +263,7 @@ public class ShiftsDataSource {
     public int GetShiftsTableCount() {
         SQLiteDatabase database = open();
 
-        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ShiftsSQLiteHelper.SHIFTS_TABLE, null);
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM " + ShiftsSQLiteHelper.SHIFTS_DETAIL_TABLE, null);
 
         cursor.moveToFirst();
         int count = cursor.getInt(0);
@@ -231,6 +282,8 @@ public class ShiftsDataSource {
         int columnIndex = cursor.getColumnIndex(ColumnName);
         return cursor.getInt(columnIndex);
     }
+
+
 
 
 

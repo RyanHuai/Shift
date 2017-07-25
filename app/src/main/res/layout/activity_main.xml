@@ -18,6 +18,16 @@
         android:visibility="gone"
         android:textColor="@android:color/darker_gray"/>
 
+    <TextView
+        android:id="@+id/remindingLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please turn on your network"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@android:color/holo_red_dark"/>
+
     <LinearLayout
         android:id="@+id/currentShiftLayout"
         android:layout_width="match_parent"

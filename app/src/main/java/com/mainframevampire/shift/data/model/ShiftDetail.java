@@ -39,20 +39,25 @@ public class ShiftDetail implements Parcelable{
         this.image = image;
     }
 
-    public ShiftDetail(int id, String start, String end,
+    public ShiftDetail(int id, String start, String end,String startLatitude, String startLongitude,
                        String startAddress, String startCity, String startState,
                        String startPostcode, String startCountry, String startLocationStatus,
                        String endAddress, String endCity, String endState,
-                       String endPostcode, String endCountry, String endLocationStatus, String image) {
+                       String endPostcode, String endCountry, String endLocationStatus,
+                       String endLatitude, String endLongitude,String image) {
         this.id = id;
         this.start = start;
         this.end = end;
+        this.startLatitude = startLatitude;
+        this.startLongitude = startLongitude;
         this.startAddress = startAddress;
         this.startCity = startCity;
         this.startState = startState;
         this.startPostcode = startPostcode;
         this.startCountry = startCountry;
         this.startLocationStatus = startLocationStatus;
+        this.endLatitude = endLatitude;
+        this.endLongitude = endLongitude;
         this.endAddress = endAddress;
         this.endCity = endCity;
         this.endState = endState;
@@ -61,6 +66,8 @@ public class ShiftDetail implements Parcelable{
         this.endLocationStatus = endLocationStatus;
         this.image = image;
     }
+
+
 
     public int getId() {
         return id;

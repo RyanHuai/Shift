@@ -60,6 +60,8 @@
                     android:layout_below="@+id/startDateAndTime"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
+                    android:maxLines="2"
+                    android:minLines="1"
                     tools:text="3 Jean Wailes Ave, Rhodes, New South Wailes 2138 Australia"/>
 
                 <TextView
@@ -94,6 +96,8 @@
                     android:layout_below="@+id/endLabel"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
+                    android:maxLines="2"
+                    android:minLines="1"
                     tools:text="3 Jean Wailes Ave, Rhodes, New South Wailes 2138 Australia"/>
             </RelativeLayout>
 

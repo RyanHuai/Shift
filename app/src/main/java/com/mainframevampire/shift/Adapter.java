@@ -172,4 +172,8 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return true;
     }
 
+    public void updateData(ArrayList<ShiftDetail> shiftDetails) {
+        mShiftDetails = shiftDetails;
+    }
+
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.mainframevampire.shift.data.model.Business;
 import com.mainframevampire.shift.data.model.Shift;
+import com.mainframevampire.shift.data.model.ShiftDetail;
 import com.mainframevampire.shift.database.ShiftsDataSource;
 
 import java.util.ArrayList;
@@ -24,16 +25,15 @@ public class LoadTableService extends IntentService {
         Log.d("LoadTableService:", "in");
         String tableName = intent.getStringExtra(MainActivity.TABLE_NAME);
         if (tableName.equals("SHIFTS")) {
-            ArrayList<Shift> shifts = intent.getParcelableArrayListExtra(MainActivity.SHIFTS);
-            for (Shift shiftFromWeb : shifts) {
-                ShiftsDataSource dataSource = new ShiftsDataSource(this);
-                Shift shiftInTable = dataSource.readShiftTableByID(shiftFromWeb.getId());
-                if (shiftInTable == null) {
-                    dataSource.createShiftContents(shiftFromWeb);
-                } else if (shiftInTable.getEnd().equals("")) {
-                    dataSource.updateShiftsTable(shiftFromWeb);
-                }
+            ShiftDetail shiftDetailFromWeb = intent.getParcelableExtra(MainActivity.SHIFT_DETAIL);
+            ShiftsDataSource dataSource = new ShiftsDataSource(this);
+            ShiftDetail shiftDetailInTableById = dataSource.readShiftTableByID(shiftDetailFromWeb.getId());
+            if (shiftDetailInTableById == null) {
+                dataSource.createShiftContents(shiftDetailFromWeb);
+            } else if (shiftDetailInTableById.getEnd().equals("")) {
+                dataSource.updateShiftsTable(shiftDetailFromWeb);
             }
+
         }
         else if (tableName.equals("BUSINESS")) {
             String name = intent.getStringExtra(MainActivity.BUSINESS_NAME);
