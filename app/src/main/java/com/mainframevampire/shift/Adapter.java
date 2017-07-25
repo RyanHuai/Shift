@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,54 +87,70 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String startTime = getTime(mShifts.get(position).getStart());
             mStartDateAndTime.setText(startDate + " " + startTime);
 
-            Double dbStartLatitude = Double.parseDouble(mShifts.get(position).getStartLatitude());
-            Double dbStartLongitude = Double.parseDouble(mShifts.get(position).getStartLongitude());
-            if (isValidLatLng(dbStartLatitude, dbStartLongitude)) {
-                Geocoder geocoder;
-                List<Address> addresses;
-                geocoder = new Geocoder(mContext, Locale.getDefault());
-                try {
-                    addresses = geocoder.getFromLocation(dbStartLatitude,dbStartLongitude, 1);
-                    String address = addresses.get(0).getAddressLine(0);
-                    String city = addresses.get(0).getLocality();
-                    String state = addresses.get(0).getAdminArea();
-                    String country = addresses.get(0).getCountryName();
-                    String postalCode = addresses.get(0).getPostalCode();
-                    String knownName = addresses.get(0).getFeatureName();
-                    mStartLocation.setText(address + ","+ city + " "+ state + "," + postalCode + " "+ country);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (isNetworkAvailable()) {
+                Double dbStartLatitude = Double.parseDouble(mShifts.get(position).getStartLatitude());
+                Double dbStartLongitude = Double.parseDouble(mShifts.get(position).getStartLongitude());
+                if (isValidLatLng(dbStartLatitude, dbStartLongitude)) {
+                    Geocoder geocoder;
+                    List<Address> addresses;
+                    geocoder = new Geocoder(mContext, Locale.getDefault());
+                    try {
+                        addresses = geocoder.getFromLocation(dbStartLatitude, dbStartLongitude, 1);
+                        if (addresses.size() > 0) {
+                            String address = addresses.get(0).getAddressLine(0);
+                            String city = addresses.get(0).getLocality();
+                            String state = addresses.get(0).getAdminArea();
+                            String country = addresses.get(0).getCountryName();
+                            String postalCode = addresses.get(0).getPostalCode();
+                            String knownName = addresses.get(0).getFeatureName();
+                            mStartLocation.setText(address + "," + city + " " + state + "," + postalCode + " " + country);
+                        } else {
+                            mStartLocation.setText("Location not available");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        mStartLocation.setText("Location not available");
+                    }
+                } else {
                     mStartLocation.setText("Location not available");
                 }
             } else {
-                mStartLocation.setText("Location not available");
+                mStartLocation.setText("cound't find location without network");
             }
 
             String endDate = getDate(mShifts.get(position).getEnd());
             String endTime = getTime(mShifts.get(position).getEnd());
             mEndDateAndTime.setText(endDate + " " + endTime );
 
-            Double dbEndLatitude = Double.parseDouble(mShifts.get(position).getEndLatitude());
-            Double dbEndLongitude = Double.parseDouble(mShifts.get(position).getEndLongitude());
-            if (isValidLatLng(dbEndLatitude, dbEndLongitude)) {
-                Geocoder geocoder;
-                List<Address> addresses;
-                geocoder = new Geocoder(mContext, Locale.getDefault());
-                try {
-                    addresses = geocoder.getFromLocation(dbEndLatitude,dbEndLongitude, 1);
-                    String address = addresses.get(0).getAddressLine(0);
-                    String city = addresses.get(0).getLocality();
-                    String state = addresses.get(0).getAdminArea();
-                    String country = addresses.get(0).getCountryName();
-                    String postalCode = addresses.get(0).getPostalCode();
-                    String knownName = addresses.get(0).getFeatureName();
-                    mEndLocation.setText(address + ","+ city + " "+ state + "," + postalCode + " "+ country);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (isNetworkAvailable()) {
+                Double dbEndLatitude = Double.parseDouble(mShifts.get(position).getEndLatitude());
+                Double dbEndLongitude = Double.parseDouble(mShifts.get(position).getEndLongitude());
+                if (isValidLatLng(dbEndLatitude, dbEndLongitude)) {
+                    Geocoder geocoder;
+                    List<Address> addresses;
+                    geocoder = new Geocoder(mContext, Locale.getDefault());
+                    try {
+                        addresses = geocoder.getFromLocation(dbEndLatitude, dbEndLongitude, 1);
+                        if (addresses.size() > 0) {
+                            String address = addresses.get(0).getAddressLine(0);
+                            String city = addresses.get(0).getLocality();
+                            String state = addresses.get(0).getAdminArea();
+                            String country = addresses.get(0).getCountryName();
+                            String postalCode = addresses.get(0).getPostalCode();
+                            String knownName = addresses.get(0).getFeatureName();
+                            mEndLocation.setText(address + "," + city + " " + state + "," + postalCode + " " + country);
+                        } else {
+                            mEndLocation.setText("Location not available");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        mEndLocation.setText("Location not available");
+                    }
+                } else {
                     mEndLocation.setText("Location not available");
                 }
             } else {
-                mEndLocation.setText("Location not available");
+                mEndLocation.setText("cound't find location without network");
             }
         }
 
@@ -163,6 +181,16 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return false;
         }
         return true;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()){
+            isAvailable = true;
+        }
+        return isAvailable;
     }
 
 

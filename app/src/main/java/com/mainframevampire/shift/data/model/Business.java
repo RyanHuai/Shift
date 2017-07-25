@@ -4,6 +4,11 @@ public class Business {
     private String name;
     private String logo;
 
+    public Business(String name, String logo) {
+        this.name = name;
+        this.logo = logo;
+    }
+
     public String getName() {
         return name;
     }

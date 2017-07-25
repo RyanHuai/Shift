@@ -5,6 +5,7 @@ import com.mainframevampire.shift.data.model.Business;
 import com.mainframevampire.shift.data.model.InputShift;
 import com.mainframevampire.shift.data.model.Shift;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,7 +30,7 @@ public interface APIService {
 
     @Headers("Authorization: Deputy RyanTest")
     @GET("dmc/shifts")
-    Call<List<Shift>>  saveShifts();
+    Call<ArrayList<Shift>>  saveShifts();
 
 
 

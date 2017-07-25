@@ -5,7 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,11 +19,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,12 +52,19 @@ import com.mainframevampire.shift.data.model.InputShift;
 import com.mainframevampire.shift.data.model.Shift;
 import com.mainframevampire.shift.data.remote.APIService;
 import com.mainframevampire.shift.data.remote.ApiUtils;
+import com.mainframevampire.shift.database.ShiftsDataSource;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -65,6 +80,10 @@ public class MainActivity extends AppCompatActivity
         TimePickerDialog.OnTimeSetListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String SHIFTS = "SHIFTS" ;
+    public static final String TABLE_NAME = "TABLE_NAME";
+    public static final String BUSINESS_NAME = "BUSINESS_NAME";
+    public static final String BUSINESS_LOGO = "BUSINESS_LOGO";
     private static String dateString = "";
     private APIService mAPIService;
 
@@ -98,7 +117,7 @@ public class MainActivity extends AppCompatActivity
     private boolean mIsStart = true;
 
     private RecyclerView mRecyclerView;
-    private List<Shift> mShifts;
+    private ArrayList<Shift> mShifts;
     private Adapter mAdapter;
 
     private LocationManager mLocationManager;
@@ -112,6 +131,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("");
 
         mLocationManager =(LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new MyLocationListener();
@@ -147,12 +167,20 @@ public class MainActivity extends AppCompatActivity
 
         if (!isNetworkAvailable()) {
             mOfflineModeLabel.setVisibility(View.VISIBLE);
-            //TODO Load from local database
+            loadBusinessFromLocalDatabase();
+            loadShiftsFromLocalDatabase();
         } else {
             mOfflineModeLabel.setVisibility(View.GONE);
             mAPIService = ApiUtils.getAPIService();
-            //load from Deputy web
-            loadBusinessFromWeb();
+            //load business info
+            ShiftsDataSource dataSource = new ShiftsDataSource(this);
+            int count = dataSource.GetBusinessTableCount();
+            if (count == 0) {
+                loadBusinessFromWeb();
+            } else {
+                loadBusinessFromLocalDatabase();
+            }
+            //load shifts
             loadShiftsFromWeb();
         }
 
@@ -273,6 +301,15 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Call<Business> call, Response<Business> response) {
                 if(response.isSuccessful()) {
                     Business business = response.body();
+                    //start LoadTableService to load data in table
+                    Intent intent = new Intent(MainActivity.this, LoadTableService.class);
+                    intent.putExtra(TABLE_NAME, "BUSINESS");
+                    intent.putExtra(BUSINESS_NAME,business.getName());
+                    intent.putExtra(BUSINESS_LOGO,business.getLogo());
+                    startService(intent);
+                    //set action bar
+                    SetBarIconInBackGround task = new SetBarIconInBackGround();
+                    task.execute(business.getLogo());
                 }
             }
 
@@ -283,14 +320,75 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void loadBusinessFromLocalDatabase() {
+        ShiftsDataSource dataSource = new ShiftsDataSource(this);
+        int count = dataSource.GetBusinessTableCount();
+        //set action bar
+        if (count != 0) {
+            Business business = dataSource.readBusinessTable();
+            if (isNetworkAvailable()) {
+                SetBarIconInBackGround task = new SetBarIconInBackGround();
+                task.execute(business.getLogo());
+            } else {
+                setTitle(business.getName());
+            }
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("business info not downloaded")
+                    .setMessage("Please open your network to download business info");
+            builder.create().show();
+        }
+
+    }
+
+    private class SetBarIconInBackGround extends AsyncTask<String, Void, Void> {
+
+
+        Bitmap bitmap;
+
+        @Override
+        protected Void doInBackground(String... urls) {
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(input);
+            } catch (IOException  e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+            getSupportActionBar().setLogo(drawable);
+
+        }
+
+    }
+
     private void loadShiftsFromWeb() {
-        mAPIService.saveShifts().enqueue(new Callback<List<Shift>>() {
+        mAPIService.saveShifts().enqueue(new Callback<ArrayList<Shift>>() {
             @Override
-            public void onResponse(Call<List<Shift>> call, Response<List<Shift>> response) {
+            public void onResponse(Call<ArrayList<Shift>> call, Response<ArrayList<Shift>> response) {
                 if(response.isSuccessful()) {
-                    List<Shift> shifts = response.body();
+                    ArrayList<Shift> shifts = response.body();
                     if (shifts != null) {
                         shifts = response.body();
+                        //start LoadTableService to load data in table
+                        Intent intent = new Intent(MainActivity.this, LoadTableService.class);
+                        intent.putExtra(TABLE_NAME, "SHIFTS");
+                        intent.putParcelableArrayListExtra(SHIFTS, shifts);
+                        startService(intent);
+
+                        //sort shifts by ID DESC
                         Collections.sort(shifts);
                         Log.d(TAG, "shifts.get(0).getEnd()" + shifts.get(0).getEnd());
                         if (shifts.get(0).getEnd().equals("")) {
@@ -320,11 +418,46 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public void onFailure(Call<List<Shift>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Shift>> call, Throwable t) {
                 Log.e(TAG, "Unable to submit saveShifts to API.");
             }
         });
     }
+
+    private void loadShiftsFromLocalDatabase() {
+        ShiftsDataSource dataSource = new ShiftsDataSource(this);
+        int count = dataSource.GetShiftsTableCount();
+        if (count != 0) {
+            ArrayList<Shift> shifts = dataSource.readAllShiftsTable();
+            if (shifts.get(0).getEnd().equals("")) {
+                //shift in progress
+                mShowStartLayout = false;
+                showCurrentShiftLayout();
+                updateCurrentShiftLayout(shifts.get(0));
+                Picasso.with(MainActivity.this).load(shifts.get(0).getImage()).into(mCurrentImageView);
+                String startDate = shifts.get(0).getStart().substring(0, 10);
+                String startTime = shifts.get(0).getStart().substring(11, 19);
+                mCurrentDateAndTime.setText(startDate + " " + startTime);
+                shifts.remove(0);
+            } else {
+                mShowStartLayout = true;
+                showStartButton();
+            }
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+            mRecyclerView.setLayoutManager(linearLayoutManager);
+            mAdapter = new Adapter(MainActivity.this, shifts);
+            mRecyclerView.setAdapter(mAdapter);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("shifts info not downloaded")
+                    .setMessage("Please open your network to download shifts info");
+            builder.create().show();
+            mIsStart = true;
+            mShowStartLayout = true;
+            showStartButton();
+        }
+    }
+
 
     private void startShift(InputShift inputShift) {
         mAPIService.saveStartShift(inputShift).enqueue(new Callback<String>() {
@@ -413,22 +546,26 @@ public class MainActivity extends AppCompatActivity
         String startTime = shift.getStart().substring(11, 19);
         mCurrentDateAndTime.setText(startDate + " " + startTime);
 
-        Double latitude = Double.parseDouble(shift.getStartLatitude());
-        Double longitude = Double.parseDouble(shift.getStartLongitude());
-        if (isValidLatLng(latitude, longitude)) {
-            Geocoder geocoder;
-            List<Address> addresses;
-            geocoder = new Geocoder(this, Locale.getDefault());
-            try {
-                addresses = geocoder.getFromLocation(latitude,longitude, 1);
-                String address = addresses.get(0).getAddressLine(0);
-                mCurrentLocation.setText(address);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (isNetworkAvailable()) {
+            Double latitude = Double.parseDouble(shift.getStartLatitude());
+            Double longitude = Double.parseDouble(shift.getStartLongitude());
+            if (isValidLatLng(latitude, longitude)) {
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(this, Locale.getDefault());
+                try {
+                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    String address = addresses.get(0).getAddressLine(0);
+                    mCurrentLocation.setText(address);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    mCurrentLocation.setText("Location not available");
+                }
+            } else {
                 mCurrentLocation.setText("Location not available");
             }
         } else {
-            mCurrentLocation.setText("Location not available");
+            mCurrentLocation.setText("cound't find location without network");
         }
 
     }

@@ -32,6 +32,8 @@
         </activity>
         <activity android:name=".ui.DetailActivity">
         </activity>
+
+        <service android:name=".ui.LoadTableService"/>
     </application>
 
 </manifest>
