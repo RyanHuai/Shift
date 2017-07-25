@@ -78,14 +78,14 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener{
+        TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String SHIFTS = "SHIFTS" ;
+    public static final String SHIFTS = "SHIFTS";
     public static final String TABLE_NAME = "TABLE_NAME";
     public static final String BUSINESS_NAME = "BUSINESS_NAME";
     public static final String BUSINESS_LOGO = "BUSINESS_LOGO";
-    public static final String SHIFT_DETAIL = "SHIFT_DETAIL" ;
+    public static final String SHIFT_DETAIL = "SHIFT_DETAIL";
     public static final String BROADCAST_ACTION = "com.mainframevampire.shift.BROADCAST";
     public static final String KEY_MESSAGE = "com.mainframevampire.shift.MESSAGE";
     public static final String MESSAGE_SOURCE = "MESSAGE_SOURCE";
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity
                 new IntentFilter(BROADCAST_ACTION));
 
         //todo: use butterknife
-        mLocationManager =(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new MyLocationListener();
 
         mOfflineModeLabel = (TextView) findViewById(R.id.offlineModeLabel);
@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()) {
+                    mEndButton.setEnabled(false);
                     mIsStart = false;
                     showStartEndEditLayout(mIsStart);
                     setCurrentTimeAndLocation();
@@ -261,6 +262,7 @@ public class MainActivity extends AppCompatActivity
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mEndButton.setEnabled(true);
                 showRecyclerViewLayout();
             }
         });
@@ -269,7 +271,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Boolean isAllFieldsInput = checkInput();
-                if(isAllFieldsInput) {
+                if (isAllFieldsInput) {
                     new ProcessShiftInBackgound().execute();
                 } else {
                     //todo: show which field is not valid
@@ -307,8 +309,7 @@ public class MainActivity extends AppCompatActivity
                         mAdapter.notifyDataSetChanged();
                     }
                 }
-            }
-            else if(messageSource.equals("CURRENT")) {
+            } else if (messageSource.equals("CURRENT")) {
                 switch (shiftDetail.getStartLocationStatus()) {
                     case "0":
                         mCurrentLocation.setText(
@@ -406,7 +407,7 @@ public class MainActivity extends AppCompatActivity
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         boolean isAvailable = false;
-        if (networkInfo != null && networkInfo.isConnected()){
+        if (networkInfo != null && networkInfo.isConnected()) {
             isAvailable = true;
         }
         return isAvailable;
@@ -416,13 +417,13 @@ public class MainActivity extends AppCompatActivity
         mAPIService.saveBusiness().enqueue(new Callback<Business>() {
             @Override
             public void onResponse(Call<Business> call, Response<Business> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     Business business = response.body();
                     //start LoadTableService to load data in table
                     Intent intent = new Intent(MainActivity.this, LoadTableService.class);
                     intent.putExtra(TABLE_NAME, "BUSINESS");
-                    intent.putExtra(BUSINESS_NAME,business.getName());
-                    intent.putExtra(BUSINESS_LOGO,business.getLogo());
+                    intent.putExtra(BUSINESS_NAME, business.getName());
+                    intent.putExtra(BUSINESS_LOGO, business.getLogo());
                     startService(intent);
                     //set action bar
                     SetBarIconInBackGround task = new SetBarIconInBackGround();
@@ -469,7 +470,7 @@ public class MainActivity extends AppCompatActivity
                 connection.connect();
                 InputStream input = connection.getInputStream();
                 bitmap = BitmapFactory.decodeStream(input);
-            } catch (IOException  e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
@@ -493,7 +494,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<ArrayList<Shift>> call, Response<ArrayList<Shift>> response) {
                 mLoadingProgressBar.setVisibility(View.GONE);
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     ArrayList<Shift> shifts = response.body();
                     if (shifts != null) {
                         shifts = response.body();
@@ -640,7 +641,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     private void loadShiftDetailFromLocalDatabase() {
         ShiftsDataSource dataSource = new ShiftsDataSource(this);
         int count = dataSource.GetShiftsTableCount();
@@ -680,14 +680,14 @@ public class MainActivity extends AppCompatActivity
         mAPIService.saveStartShift(inputShift).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     String returnString = response.body().replaceAll("\"", "");
                     if (returnString.equals("Start shift - All good")) {
                         loadShiftsFromWeb();
                         showRecyclerViewLayout();
                         Log.d(TAG, "returnString:" + response.body());
                     }
-                    if (returnString.substring(0,4).equals("Nope")) {
+                    if (returnString.substring(0, 4).equals("Nope")) {
                         Log.d(TAG, "returnString.substring(0,3):" + response.body());
                     }
                 }
@@ -704,13 +704,13 @@ public class MainActivity extends AppCompatActivity
         mAPIService.saveEndShift(inputEndShift).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     String returnString = response.body().replaceAll("\"", "");
                     if (returnString.equals("End shift - All good")) {
                         loadShiftsFromWeb();
                         showRecyclerViewLayout();
                     }
-                    if (returnString.substring(0,4).equals("Nope")) {
+                    if (returnString.substring(0, 4).equals("Nope")) {
                         Log.d(TAG, "returnString.substring(0,3):" + response.body());
                     }
                 }
@@ -740,6 +740,7 @@ public class MainActivity extends AppCompatActivity
     private void showCurrentShiftLayout() {
         mCurrentShiftLayout.setVisibility(View.VISIBLE);
         mStartButton.setVisibility(View.GONE);
+        mEndButton.setEnabled(true);
     }
 
     private void showStartEndEditLayout(Boolean isStart) {
@@ -774,7 +775,7 @@ public class MainActivity extends AppCompatActivity
 
         //start LoadAddressService to get the address detail
         Intent Intent = new Intent(MainActivity.this, LoadAddressService.class);
-        Intent.putExtra(MESSAGE_SOURCE,"CURRENT");
+        Intent.putExtra(MESSAGE_SOURCE, "CURRENT");
         Intent.putExtra(SHIFT_DETAIL, shiftDetail);
         startService(Intent);
 
@@ -783,7 +784,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String yearString = String.valueOf(year);
-        String monthString = String.valueOf(month+1);
+        String monthString = String.valueOf(month + 1);
         String formattedMonth = ("00" + monthString).substring(monthString.length());
         String dayString = String.valueOf(dayOfMonth);
         String formattedday = ("00" + dayString).substring(dayString.length());
@@ -806,8 +807,8 @@ public class MainActivity extends AppCompatActivity
         SimpleDateFormat dateFormat =
                 new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZZ", java.util.Locale.getDefault());
         String currentDate = dateFormat.format(new Date());
-        mDate.setText(currentDate.substring(0,10));
-        mTime.setText(currentDate.substring(11,19));
+        mDate.setText(currentDate.substring(0, 10));
+        mTime.setText(currentDate.substring(11, 19));
 
         //set current location
         if (isLocationEnabled(this)) {
@@ -821,26 +822,6 @@ public class MainActivity extends AppCompatActivity
             } else {
                 mLocationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER, 5000, 10, mLocationListener);
-                Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Location locationNet = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                Location location = getLastBestLocation(locationGPS, locationNet);
-                Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-                List<Address> addresses;
-                try {
-                    addresses = gcd.getFromLocation(location.getLatitude(),
-                            location.getLongitude(), 1);
-                    if (addresses.size() > 0) {
-                        mRoad.setText(addresses.get(0).getAddressLine(0));
-                        //mSuburb.setText(addresses.get(0).getFeatureName());
-                        mCity.setText(addresses.get(0).getLocality());
-                        mPostcode.setText(addresses.get(0).getPostalCode());
-                        mState.setText(addresses.get(0).getAdminArea());
-                        mCountry.setText(addresses.get(0).getCountryName());
-                    }
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         } else {
             //todo: show a dialog to turn on the location directly
@@ -875,8 +856,7 @@ public class MainActivity extends AppCompatActivity
                             mState.setText(addresses.get(0).getAdminArea());
                             mCountry.setText(addresses.get(0).getCountryName());
                         }
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } catch (SecurityException e) {
@@ -885,7 +865,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
 
 
     /*---------- Listener class to get coordinates ------------- */
@@ -900,7 +879,7 @@ public class MainActivity extends AppCompatActivity
 
             makeUseOfNewLocation(loc);
 
-            if(currentBestLocation == null){
+            if (currentBestLocation == null) {
                 currentBestLocation = loc;
             }
 
@@ -918,26 +897,30 @@ public class MainActivity extends AppCompatActivity
                     mState.setText(addresses.get(0).getAdminArea());
                     mCountry.setText(addresses.get(0).getCountryName());
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
 
         @Override
-        public void onProviderDisabled(String provider) {}
+        public void onProviderDisabled(String provider) {
+        }
 
         @Override
-        public void onProviderEnabled(String provider) {}
+        public void onProviderEnabled(String provider) {
+        }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
     }
 
     private Location getLastBestLocation(Location locationGPS, Location locationNet) {
         long GPSLocationTime = 0;
-        if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
+        if (null != locationGPS) {
+            GPSLocationTime = locationGPS.getTime();
+        }
 
         long NetLocationTime = 0;
 
@@ -945,10 +928,9 @@ public class MainActivity extends AppCompatActivity
             NetLocationTime = locationNet.getTime();
         }
 
-        if ( 0 < GPSLocationTime - NetLocationTime ) {
+        if (0 < GPSLocationTime - NetLocationTime) {
             return locationGPS;
-        }
-        else {
+        } else {
             return locationNet;
         }
     }
@@ -964,9 +946,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /** Determines whether one location reading is better than the current location fix
-     * @param location  The new location that you want to evaluate
-     * @param currentBestLocation  The current location fix, to which you want to compare the new one.
+    /**
+     * Determines whether one location reading is better than the current location fix
+     *
+     * @param location            The new location that you want to evaluate
+     * @param currentBestLocation The current location fix, to which you want to compare the new one.
      */
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
@@ -1010,7 +994,9 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    /** Checks whether two providers are the same */
+    /**
+     * Checks whether two providers are the same
+     */
     private boolean isSameProvider(String provider1, String provider2) {
         if (provider1 == null) {
             return provider2 == null;
@@ -1023,7 +1009,7 @@ public class MainActivity extends AppCompatActivity
         int locationMode = 0;
         String locationProviders;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             try {
                 locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
             } catch (Settings.SettingNotFoundException e) {
@@ -1033,7 +1019,7 @@ public class MainActivity extends AppCompatActivity
 
             return locationMode != Settings.Secure.LOCATION_MODE_OFF;
 
-        }else{
+        } else {
             locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
             return !TextUtils.isEmpty(locationProviders);
         }
@@ -1050,7 +1036,7 @@ public class MainActivity extends AppCompatActivity
                 mCity.getText().toString().trim().length() != 0 &&
                 mPostcode.getText().toString().trim().length() != 0 &&
                 mState.getText().toString().trim().length() != 0 &&
-                mCountry.getText().toString().trim().length() != 0 ) {
+                mCountry.getText().toString().trim().length() != 0) {
             isAllFieldsInput = true;
         }
         return isAllFieldsInput;
@@ -1080,7 +1066,6 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-
         //validate and initialise address
         String road = mRoad.getText().toString().trim();
         String suburb = mSuburb.getText().toString().trim();
@@ -1095,7 +1080,7 @@ public class MainActivity extends AppCompatActivity
         try {
             Log.d(TAG, road);
             addresses = geoCoder.getFromLocationName(
-                    road + "," + city + "," + state + "," + country ,3);
+                    road + "," + city + "," + state + "," + country, 3);
             Log.d(TAG, addresses.size() + "");
             if (addresses.size() > 0) {
                 Address location = addresses.get(0);
@@ -1119,4 +1104,5 @@ public class MainActivity extends AppCompatActivity
         builder.create().show();
 
     }
+
 }
